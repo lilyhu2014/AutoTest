@@ -30,7 +30,7 @@ public class JsonLibrary {
 
 	@SuppressWarnings("resource")
 	@RobotKeyword
-	public String buildJsonTemplate(String jsonFilePath, String templateValue) throws Exception {
+	public String tempBuildJsonTemplate(String jsonFilePath, String templateValue) throws Exception {
 		String[] templateValues = templateValue.split(";");
 		Scanner scanner = null;
 		Map<String, Object> templateValuesMap = CommonUtil.getTemplateValuesMap(templateValues,

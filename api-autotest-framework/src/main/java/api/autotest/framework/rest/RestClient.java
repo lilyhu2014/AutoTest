@@ -1,5 +1,6 @@
 package api.autotest.framework.rest;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -22,13 +23,23 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.util.URIUtil;
+import org.apache.log4j.Logger;
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+import org.glassfish.jersey.media.multipart.MultiPart;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
+
+import api.autotest.framework.common.LoggerUtils;
 
 public class RestClient {
-	private static final String CONTENT_TYPE = "Content-Type";
+	private static final Logger LOGGER = Logger.getLogger(RestClient.class);
+	public static final String CONTENT_TYPE = "Content-Type";
 	private static final String CT_JSON = "application/json";
 	private static final String CT_URLENCODED = "application/x-www-form-urlencoded";
+	private static final String CT_MULTIPART_FORMDATA = "multipart/form-data";
+	public static final String CT_APPLICATION_OCTETSTREAM = "application/octet-stream";
 
 	public Optional<Response> get(String url, Map<String, String> headers) {
+		LoggerUtils.info(LOGGER, "Invoking Get URL : " + url);
 		try {
 			url = URIUtil.encodeQuery(url);
 			Client client = ClientBuilder.newClient();
@@ -37,16 +48,18 @@ public class RestClient {
 			this.parseHeader(builder, headers);
 			return Optional.ofNullable(builder.get());
 		} catch (URIException e) {
-			// throw new RuntimeException(e.getMessage());
-			e.printStackTrace();
+			LOGGER.error(e);
+			throw new RuntimeException(e.getMessage());
 		}
-		return Optional.empty();
 	}
 
 	public Optional<Response> post(String url, Map<String, String> headers, String postBody) {
+		LoggerUtils.info(LOGGER, "Invoking Post URL : " + url);
+		FormDataMultiPart formDataMultiPart = null;
 		try {
 			url = URIUtil.encodeQuery(url);
 			Client client = ClientBuilder.newClient();
+			client.register(MultiPartFeature.class);
 			WebTarget target = client.target(url);
 			Builder builder = target.request();
 			this.parseHeader(builder, headers);
@@ -63,20 +76,38 @@ public class RestClient {
 				MultivaluedMap<String, String> formData = new MultivaluedHashMap<>(map);
 				payload = Entity.form(formData);
 			} else if (MapUtils.isNotEmpty(headers) && headers.containsKey(CONTENT_TYPE)
+					&& headers.get(CONTENT_TYPE).equalsIgnoreCase(CT_MULTIPART_FORMDATA)) {
+				formDataMultiPart = new FormDataMultiPart();
+				Optional<MultiPart> multiPart = MultiPartUtils.getMultiPart(headers, postBody, formDataMultiPart);
+				if (multiPart.isPresent()) {
+					MultiPart multiPartDetail = multiPart.get();
+					payload = Entity.entity(multiPartDetail, multiPartDetail.getMediaType());
+				}
+			} else if (MapUtils.isNotEmpty(headers) && headers.containsKey(CONTENT_TYPE)
 					&& headers.get(CONTENT_TYPE).equalsIgnoreCase(CT_JSON)) {
 				payload = Entity.json(postBody);
 			} else {
 				payload = Entity.text(postBody);
 			}
+			LOGGER.info(postBody);
 			return Optional.ofNullable(builder.post(payload));
 		} catch (URIException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error(e);
+			throw new RuntimeException(e.getMessage());
+		} finally {
+			if (formDataMultiPart != null) {
+				try {
+					formDataMultiPart.close();
+				} catch (IOException e) {
+					LOGGER.error("Close FormDataMultiPart Resource failure.");
+					throw new RuntimeException(e.getMessage());
+				}
+			}
 		}
-		return Optional.empty();
 	}
-	
+
 	public Optional<Response> put(String url, Map<String, String> headers, String putBody) {
+		LoggerUtils.info(LOGGER, "Invoking Put URL : " + url);
 		try {
 			url = URIUtil.encodeQuery(url);
 			Client client = ClientBuilder.newClient();
@@ -84,20 +115,21 @@ public class RestClient {
 			Builder builder = target.request();
 			this.parseHeader(builder, headers);
 			Entity<?> payload = null;
-			if(MapUtils.isNotEmpty(headers) && headers.containsKey(CONTENT_TYPE) && headers.get(CONTENT_TYPE).equalsIgnoreCase(CT_JSON)) {
+			if (MapUtils.isNotEmpty(headers) && headers.containsKey(CONTENT_TYPE)
+					&& headers.get(CONTENT_TYPE).equalsIgnoreCase(CT_JSON)) {
 				payload = Entity.json(putBody);
-			}else {
+			} else {
 				payload = Entity.text(putBody);
 			}
 			return Optional.ofNullable(builder.put(payload));
 		} catch (URIException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error(e);
+			throw new RuntimeException(e.getMessage());
 		}
-		return Optional.empty();
 	}
-	
+
 	public Optional<Response> delete(String url, Map<String, String> headers) {
+		LoggerUtils.info(LOGGER, "Invoking Delete URL : " + url);
 		try {
 			url = URIUtil.encodeQuery(url);
 			Client client = ClientBuilder.newClient();
@@ -106,10 +138,9 @@ public class RestClient {
 			this.parseHeader(builder, headers);
 			return Optional.ofNullable(builder.delete());
 		} catch (URIException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error(e);
+			throw new RuntimeException(e.getMessage());
 		}
-		return Optional.empty();
 	}
 
 	private void parseHeader(Builder builder, Map<String, String> headers) {

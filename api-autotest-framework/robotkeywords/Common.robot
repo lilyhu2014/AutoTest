@@ -1,5 +1,5 @@
 *** Setting ***
-Library        api.autotest.framework.BasicLibrary
+Library        api.RobotLibrary
 Library        DateTime
 Library        String
 Library        Collections
