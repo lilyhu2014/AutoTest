@@ -55,6 +55,11 @@ public class JsonLibrary {
 		}
 		return documentContext.json().toString();
 	}
+	
+	@RobotKeyword
+	public void validateJsonObject(String expected, String actual) {
+		validateJsonObject(expected, actual, JSONCompareMode.LENIENT.toString());
+	}
 
 	@RobotKeyword
 	public void validateJsonObject(String expected, String actual, String compareMode) {

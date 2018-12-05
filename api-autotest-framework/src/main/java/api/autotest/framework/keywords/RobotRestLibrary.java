@@ -4,11 +4,14 @@ import static api.autotest.framework.rest.RestClientUtils.REPLACE_WITH;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 import org.robotframework.javalib.annotation.RobotKeyword;
 import org.robotframework.javalib.annotation.RobotKeywordOverload;
@@ -32,6 +35,7 @@ public class RobotRestLibrary {
 	private static ApplicationContext context;
 	private static Configuration configuration = Configuration.builder().jsonProvider(new JacksonJsonNodeJsonProvider())
 			.mappingProvider(new JacksonMappingProvider()).build();
+	public static Map<String, List<Map<String, String>>> tableMap = new HashMap<String, List<Map<String, String>>>();
 
 	private RestClientUtils restClientUtils;
 
@@ -43,10 +47,49 @@ public class RobotRestLibrary {
 
 	@Autowired
 	public void setRestClientUtils(RestClientUtils restClientUtils) {
-		LOGGER.info("Autowired RestClientUtils.");
 		this.restClientUtils = restClientUtils;
 	}
 
+	@RobotKeyword
+	public Object encodeBase64(String value) {
+		return new String(Base64.encodeBase64(value.getBytes()));
+	}
+	
+	@RobotKeyword
+	public void saveToCache(Object value) {
+		restClientUtils.saveToCache(value);
+	}
+	
+	@RobotKeywordOverload
+	public void saveToCache(String key, Object value) {
+		restClientUtils.saveToCache(key, value, 1000 * 60 * 30);
+	}
+	
+	@RobotKeywordOverload
+	public void saveToCache(String key, Object value, long timeToLive) {
+		restClientUtils.saveToCache(key, value, timeToLive);
+	}
+	
+	@RobotKeywordOverload
+	public void saveToCache(String key, Object value, long timeToLive, long cacheAllowance) {
+		restClientUtils.saveToCache(key, value, timeToLive, cacheAllowance);
+	}
+	
+	@RobotKeyword
+	public Object getFromCache(String key) {
+		return restClientUtils.getFromCache(key);
+	}
+	
+	@RobotKeywordOverload
+	public Object getFromCache() {
+		return restClientUtils.getFromCache();
+	}
+	
+	@RobotKeyword
+	public boolean removeFromCache(String key) {
+		return restClientUtils.removeFromCache(key);
+	}
+	
 	@RobotKeyword
 	public Object invokeService(String url) {
 		return invokeService("GET", Collections.<String, String>emptyMap(), url);

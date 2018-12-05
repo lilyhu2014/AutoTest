@@ -89,7 +89,7 @@ public class RestClient {
 			} else {
 				payload = Entity.text(postBody);
 			}
-			LOGGER.info(postBody);
+			LOGGER.info("postBody : " + postBody);
 			return Optional.ofNullable(builder.post(payload));
 		} catch (URIException e) {
 			LOGGER.error(e);
@@ -149,6 +149,7 @@ public class RestClient {
 			Iterator<Entry<String, String>> itr = entrySet.iterator();
 			while (itr.hasNext()) {
 				Entry<String, String> entry = itr.next();
+				LOGGER.info(entry.toString());
 				builder = builder.header(entry.getKey(), entry.getValue());
 			}
 		}

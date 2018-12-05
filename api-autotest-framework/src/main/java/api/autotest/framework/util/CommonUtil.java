@@ -47,5 +47,9 @@ public class CommonUtil {
 		}
 		return formDataMap;
 	}
+	
+	public static String removeNonAsciiChars(String str) {
+        return str.replaceAll("[^\\p{ASCII}]", "");
+    }
 
 }

@@ -12,18 +12,18 @@ public class BasicLibrary extends AnnotationLibrary {
 	public static final String ROBOT_LIBRARY_SCOPE = "GLOBAL";
 	private final static Logger LOGGER = Logger.getLogger("BasicLibrary");
 	
-//	static List<String> keywordPatterns = new ArrayList<String>() {
-//		private static final long serialVersionUID = 1L;
-//		{
-//			add("api/autotest/framework/keywords/**/*.class");
-//		}
-//	};
+	static List<String> keywordPatterns = new ArrayList<String>() {
+		private static final long serialVersionUID = 1L;
+		{
+			add("api/autotest/framework/keywords/**/*.class");
+		}
+	};
 	
-	private static final String KEYWORD_PATTERN = "api/autotest/framework/keywords/*.class";
+//	private static final String KEYWORD_PATTERN = "api/autotest/framework/keywords/*.class";
 	
 	public BasicLibrary() {
-		addKeywordPattern(KEYWORD_PATTERN);
-//		super(keywordPatterns);
+//		addKeywordPattern(KEYWORD_PATTERN);
+		super(keywordPatterns);
 		LOGGER.info("User defined keywords loaded.");
 	}
 

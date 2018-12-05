@@ -17,4 +17,8 @@
 		class="api.autotest.framework.rest.RestClient"></bean>
 	<bean id="restClientUtils"
 		class="api.autotest.framework.rest.RestClientUtils"></bean>
+	<bean id="oauthTokenCache"
+		class="api.autotest.framework.rest.OauthTokenCache"></bean>
+	<bean id="validationUtils"
+		class="api.autotest.framework.db.ValidationUtils"></bean>
 </beans>

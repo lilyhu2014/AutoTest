@@ -47,6 +47,32 @@ public class RestClientUtils {
 	@Autowired
 	private RestClient restClient;
 	
+	@Autowired
+	private OauthTokenCache oauthTokenCache;
+	
+	public void saveToCache(String key, Object value, long timeToLive) {
+		oauthTokenCache.put(key, value, timeToLive, 0L);
+	}
+	
+	public void saveToCache(String key, Object value, long timeToLive, long cacheAllowance) {
+		oauthTokenCache.put(key, value, timeToLive, cacheAllowance);
+	}
+	
+	public void saveToCache(Object value) {
+		oauthTokenCache.put(value);
+	}
+	
+	public Object getFromCache(String key) {
+		return oauthTokenCache.get(key);
+	}
+	
+	public Object getFromCache() {
+		return oauthTokenCache.get();
+	}
+	
+	public boolean removeFromCache(String key) {
+		return oauthTokenCache.remove(key);
+	}
 	public RestServiceResponse invoke(String action, Map<String, String> requestHeaders, String url,
 			String requestBody) {
 		Optional<Response> res;
