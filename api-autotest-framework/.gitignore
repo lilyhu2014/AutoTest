@@ -3,6 +3,8 @@
 .project
 /.settings/
 /target/
+/robotkeywords/
+/testcase_api/
 /test-output/*
 log.html
 *.robot-log.html
