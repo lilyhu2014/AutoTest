@@ -36,17 +36,11 @@ public class ValidationUtils {
 	}
 	
 	public Map<String, String> getValidationAttributes(String sqlResource, TreeMap<String, String> sqlQueries, String key) {
-		System.out.println("sqlResource : " + sqlResource);
-		System.out.println("sqlQueries : " + sqlQueries);
-		System.out.println("key : " + key);
 		Map<String, String> attributes = new HashMap<String, String>();
 		List<Object> queryParameters = new LinkedList<Object>();
 		if(key.indexOf("(") > -1) {
-			System.out.println("1.... ");
 			String queryParametersStr = key.substring(key.indexOf("(") + 1, key.length() - 1);
-			System.out.println("queryParametersStr : " + queryParametersStr);
 			key = key.substring(0, key.indexOf("("));
-			System.out.println("key : " + key);
 			String[] queryParametersStrArray = queryParametersStr.split("(?<!\\\\)" + Pattern.quote(","));
 			for(int i = 0 ; i < queryParametersStrArray.length; i++) {
 				String queryParameter = queryParametersStrArray[i].trim();
@@ -64,12 +58,10 @@ public class ValidationUtils {
 			}
 			LoggerUtils.info(LOGGER, queryParameters);
 		}
-		System.out.println("2.... ");
 		String[] keyArray = key.split(Pattern.quote("."));
 		if(keyArray.length == 1) {
 			attributes.put(KEY_EXPECTED_VALUE, key);
 		} else if(keyArray.length == 2) {
-			System.out.println("3.... ");
 			attributes.put(KEY_DBNAME, keyArray[0]);
 			SortedMap<String, String> queryMap = getByPreffix(sqlQueries, keyArray[0] + "." + keyArray[1]);
 			if(queryMap.size() == 0) {
