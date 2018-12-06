@@ -1,0 +1,20 @@
+{
+    "id": 70,
+    "name": "Lemon",
+    "copyright_owner": "Thomas Wilson",
+    "status": "RECHECKING",
+    "type": "PICTURE",
+    "sold_out": true,
+    "sold_count": "0",
+    "view_count": "23",
+    "composition_url": "http://dev-images.tokenpad.io.s3.amazonaws.com/user/1543457628015_citrus-379376_1280.jpg",
+    "cover_url": "http://dev-images.tokenpad.io.s3.amazonaws.com/user/1543457528312_citrus-379376_1280.jpg",
+    "desc": "three lemons",
+    "completed_site": "Home",
+    "recommend_min_price": 2,
+    "detail": {
+        "author": "Thomas Wilson"
+    },
+    "created_at": "2018-11-29T02:14:05Z",
+    "updated_at": "2018-12-04T01:59:34Z"
+}

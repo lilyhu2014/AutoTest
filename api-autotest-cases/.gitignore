@@ -1,0 +1,16 @@
+.DS_Store
+.classpath
+.project
+/.settings/
+/target/
+/test-output/*
+log.html
+*.robot-log.html
+output.xml
+*.robot.xml
+report.html
+*.robot-report.html
+automation.log
+framework.log
+*.log.*
+/bin/

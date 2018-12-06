@@ -1,0 +1,1 @@
+TIANFU.get_composition_detail=select * from tianfu.t_composition where name=?;

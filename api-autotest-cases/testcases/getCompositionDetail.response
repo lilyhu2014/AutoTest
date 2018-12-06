@@ -1,0 +1,27 @@
+{
+  "id": 0,
+  "name": "xx",
+  "copyright_owner": "xx",
+  "status": "xx",
+  "type": "PICTURE",
+  "sold_out": false,
+  "sold_count": "0",
+  "composition_url": "http://dev-images.tokenpad.io.s3.amazonaws.com/user/1544061931860_______.jpg",
+  "cover_url": "http://dev-images.tokenpad.io.s3.amazonaws.com/user/1544061808941_______.jpg",
+  "desc": "华阳",
+  "copyright_id": "c9f25fa7-af7e-43a4-9796-ee1c4273ae54",
+  "transaction_id": "95d5d4f1-e17a-4337-afca-1031612a16d4",
+  "transaction_at": "2018-12-06T02:11:45Z",
+  "completed_at": "2018-12-06T02:06:20Z",
+  "completed_site": "xx",
+  "published_at": "2018-12-06T02:06:20Z",
+  "recommend_min_price": 4,
+  "detail": {
+    "author": "姚丽"
+  },
+  "total_count": 98,
+  "remain_count": 98,
+  "price": 1,
+  "release_at": "2018-12-06T02:17:46Z",
+  "created_at": "2018-12-06T02:09:31Z"
+}
