@@ -70,7 +70,6 @@ public class JsonLibrary {
 		try {
 			Map<String, Object> templateValuesMap = CommonUtils.getTemplateValuesMap(templateValues, REPLACE_WITH);
 			scanner = new Scanner(new File(jsonFilePath), "UTF-8");
-			System.out.println("hasNext : " + scanner.useDelimiter("\\A").hasNext());
 			String text = scanner.useDelimiter("\\A").next();
 			DocumentContext documentContext = JsonPath.using(configuration).parse(text);
 			Iterator<Entry<String, Object>> itr = templateValuesMap.entrySet().iterator();

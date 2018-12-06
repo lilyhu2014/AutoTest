@@ -174,8 +174,6 @@ public class RestClientUtils {
 			response.setResponse(responseBody);
 		} else {
 			responseBody = clientResponse.readEntity(String.class);
-			//remove non ascii chars
-//			responseBody = responseBody.toString().replaceAll("[^\\p{ASCII}]", "");
 			try {
 				Object responseObject = new JSONParser().parse(responseBody.toString());
 				if(responseObject instanceof JSONObject) {

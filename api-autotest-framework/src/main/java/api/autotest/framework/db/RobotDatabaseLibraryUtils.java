@@ -165,13 +165,4 @@ public class RobotDatabaseLibraryUtils {
 		LOGGER.info(rowsList);
 		return rowsList;
 	}
-	
-	protected List<String> compareResultSets(String tableName, String query1, String query2, ResultSet rs1, ResultSet rs2, List<String> excludeColsCompare) {
-		return compareResultSets(tableName, query1, query2, rs1, rs2, excludeColsCompare, new HashMap<String, Constraint>(), new HashMap<String, String>());
-	}
-
-	protected List<String> compareResultSets(String tableName, String query1, String query2, ResultSet rs1, ResultSet rs2, List<String> excludeColsCompare, Map<String, Constraint> constraintMap, Map<String, String> newColsValues) {
-		List<String> errMessageList = new ArrayList<String>();
-		return errMessageList;
-	}
 }

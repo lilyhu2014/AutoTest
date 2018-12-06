@@ -144,7 +144,7 @@ public class RestClient {
 	}
 
 	private void parseHeader(Builder builder, Map<String, String> headers) {
-		if (MapUtils.isNotEmpty(headers)) {// Optional.ofNullable(headers).isPresent()
+		if (MapUtils.isNotEmpty(headers)) {
 			Set<Entry<String, String>> entrySet = headers.entrySet();
 			Iterator<Entry<String, String>> itr = entrySet.iterator();
 			while (itr.hasNext()) {
