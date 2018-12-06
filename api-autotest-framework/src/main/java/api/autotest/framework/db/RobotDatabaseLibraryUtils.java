@@ -16,32 +16,25 @@ import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 
-import com.jayway.jsonpath.Configuration;
-import com.jayway.jsonpath.spi.json.JsonOrgJsonProvider;
-import com.jayway.jsonpath.spi.mapper.JsonOrgMappingProvider;
-
 import api.autotest.framework.common.LoggerUtils;
-import api.autotest.framework.util.CommonUtil;
 
 public class RobotDatabaseLibraryUtils {
 	private final static Logger LOGGER = Logger.getLogger(RobotDatabaseLibraryUtils.class);
-	private static Configuration JSON_ORG_CONFIGURATION = Configuration.builder()
-			.mappingProvider(new JsonOrgMappingProvider()).jsonProvider(new JsonOrgJsonProvider()).build();
-	protected static Map<String, Connection> connections = new HashMap<String, Connection>();
+	public static Map<String, Connection> connections = new HashMap<String, Connection>();
 	private String driverClass;
 	private String connectionUrl;
 	private String dbUser;
 	private String dbPassword;
-	protected String sqlResource;
-	protected TreeMap<String, String> sqlQueries = new TreeMap<String, String>();
+	public String sqlResource;
+	public TreeMap<String, String> sqlQueries = new TreeMap<String, String>();
 
 	protected String errMsg = "Operator: %s : Not Matched: Column : %s\t\tExpected : %s\t\tActual : %s";
 
-	protected void setConnection(String dbName, Connection conn) {
+	public void setConnection(String dbName, Connection conn) {
 		connections.put(dbName, conn);
 	}
 
-	protected Connection getConnection(String dbName) {
+	public Connection getConnection(String dbName) {
 		Connection conn = connections.get(dbName);
 		if (conn == null) {
 			LOGGER.error("Database connection not found for : " + dbName);

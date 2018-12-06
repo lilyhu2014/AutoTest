@@ -7,18 +7,22 @@
     http://www.springframework.org/schema/context
     http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<context:component-scan
-		base-package="api.autotest.framework" />
-	<context:annotation-config />
 
-	<bean id="autowiredAnnotationBeanPostProcessor"
-		class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"></bean>
 	<bean id="restClient"
-		class="api.autotest.framework.rest.RestClient"></bean>
-	<bean id="restClientUtils"
-		class="api.autotest.framework.rest.RestClientUtils"></bean>
+		class="api.autotest.framework.rest.RestClient" />
+		
 	<bean id="oauthTokenCache"
-		class="api.autotest.framework.rest.OauthTokenCache"></bean>
+		class="api.autotest.framework.rest.OauthTokenCache" />
+		
+	<bean id="restClientUtils"
+		class="api.autotest.framework.rest.RestClientUtils">
+		<property name="restClient" ref="restClient" />
+		<property name="oauthTokenCache" ref="oauthTokenCache" />
+	</bean>
+	
 	<bean id="validationUtils"
-		class="api.autotest.framework.db.ValidationUtils"></bean>
+		class="api.autotest.framework.db.ValidationUtils" />
+		
+	<bean id="robotDatabaseLibraryUtils"
+		class="api.autotest.framework.db.RobotDatabaseLibraryUtils" />
 </beans>

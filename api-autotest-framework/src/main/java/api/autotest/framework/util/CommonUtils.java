@@ -5,9 +5,11 @@ import java.util.Map;
 
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.testng.log4testng.Logger;
 
-public class CommonUtil {
+public class CommonUtils {
 	public final static String REPLACE_WITH = " REPLACE WITH ";
+	private final static Logger LOGGER = Logger.getLogger(CommonUtils.class);
 
 	public static Map<String, Object> getTemplateValuesMap(String[] templateValues, String delimeter) throws ParseException {
 		Map<String, Object> formDataMap = new LinkedHashMap();
@@ -43,6 +45,7 @@ public class CommonUtil {
 					valueType = "Decimal Number";
 				}
 				formDataMap.put(key, value);
+				LOGGER.info(String.format("key: %s ; type : %s ; value : %s", key, valueType, value)); 
 			}
 		}
 		return formDataMap;

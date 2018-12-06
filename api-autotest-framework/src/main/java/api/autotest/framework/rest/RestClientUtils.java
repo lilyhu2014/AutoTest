@@ -32,7 +32,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import api.autotest.framework.common.LoggerUtils;
 
@@ -44,11 +43,17 @@ public class RestClientUtils {
 	private final static Logger LOGGER = Logger.getLogger(RestClientUtils.class);
 	public final static String REPLACE_WITH = " REPLACE WITH ";
 
-	@Autowired
 	private RestClient restClient;
 	
-	@Autowired
 	private OauthTokenCache oauthTokenCache;
+	
+	public void setRestClient(RestClient restClient) {
+		this.restClient = restClient;
+	}
+	
+	public void setOauthTokenCache(OauthTokenCache oauthTokenCache) {
+		this.oauthTokenCache = oauthTokenCache;
+	}
 	
 	public void saveToCache(String key, Object value, long timeToLive) {
 		oauthTokenCache.put(key, value, timeToLive, 0L);
@@ -170,7 +175,7 @@ public class RestClientUtils {
 		} else {
 			responseBody = clientResponse.readEntity(String.class);
 			//remove non ascii chars
-			responseBody = responseBody.toString().replaceAll("[^\\p{ASCII}]", "");
+//			responseBody = responseBody.toString().replaceAll("[^\\p{ASCII}]", "");
 			try {
 				Object responseObject = new JSONParser().parse(responseBody.toString());
 				if(responseObject instanceof JSONObject) {

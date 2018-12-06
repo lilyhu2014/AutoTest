@@ -12,29 +12,28 @@ import java.util.Scanner;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.robotframework.javalib.annotation.RobotKeyword;
-import org.robotframework.javalib.annotation.RobotKeywordOverload;
 import org.robotframework.javalib.annotation.RobotKeywords;
 import org.robotframework.javalib.org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import api.autotest.framework.common.LoggerUtils;
-import api.autotest.framework.db.CompareDBObject;
+import api.autotest.framework.db.RobotDatabaseLibraryUtils;
 import api.autotest.framework.db.ValidationUtils;
 
 @RobotKeywords
-public class RobotDatabaseLibrary extends CompareDBObject {
+public class RobotDatabaseLibrary {
 	private final static Logger LOGGER = Logger.getLogger(RobotDatabaseLibrary.class);
 	private static ApplicationContext context;
 	public static final String ROBOT_LIBRARY_SCOPE = "GOLBAL";
 
-	@Autowired
 	private ValidationUtils validationUtils;
+	private RobotDatabaseLibraryUtils  robotDatabaseLibraryUtils;
 	
 	public RobotDatabaseLibrary() {
 		context = new ClassPathXmlApplicationContext("spring/bean-mappings.xml");
 		validationUtils = (ValidationUtils) context.getBean("validationUtils");
+		robotDatabaseLibraryUtils = (RobotDatabaseLibraryUtils) context.getBean("robotDatabaseLibraryUtils");
 	}
 
 	@RobotKeyword
@@ -42,11 +41,11 @@ public class RobotDatabaseLibrary extends CompareDBObject {
 		if (sqlResourcePath.endsWith(".robot")) {
 			sqlResourcePath = sqlResourcePath.substring(0, sqlResourcePath.lastIndexOf(".")) + ".sql";
 		}
-		this.clearSqlQueries();
+		robotDatabaseLibraryUtils.clearSqlQueries();
 		LoggerUtils.info(LOGGER, "Setting sql resource path as " + sqlResourcePath);
 		try {
 			File file = new File(sqlResourcePath);
-			this.sqlResource = sqlResourcePath;
+			robotDatabaseLibraryUtils.sqlResource = sqlResourcePath;
 			final Scanner scanner = new Scanner(file);
 			while (scanner.hasNextLine()) {
 				final String lineFromFile = scanner.nextLine();
@@ -54,11 +53,11 @@ public class RobotDatabaseLibrary extends CompareDBObject {
 					int index = lineFromFile.indexOf("=");
 					String queryName = lineFromFile.substring(0, index);
 					String query = lineFromFile.substring(index + 1);
-					sqlQueries.put(queryName.trim(), query.trim());
+					robotDatabaseLibraryUtils.sqlQueries.put(queryName.trim(), query.trim());
 				}
 			}
 			scanner.close();
-			LoggerUtils.info(LOGGER, sqlQueries);
+			LoggerUtils.info(LOGGER, robotDatabaseLibraryUtils.sqlQueries);
 		} catch (FileNotFoundException e) {
 			LOGGER.error(e);
 			throw new RuntimeException("FileNotFound : " + sqlResourcePath);
@@ -67,22 +66,22 @@ public class RobotDatabaseLibrary extends CompareDBObject {
 
 	@RobotKeyword
 	public String getSqlResource() {
-		LOGGER.info("Returning sql resource path as " + sqlResource);
-		return this.sqlResource;
+		LOGGER.info("Returning sql resource path as " + robotDatabaseLibraryUtils.sqlResource);
+		return robotDatabaseLibraryUtils.sqlResource;
 	}
 
 	@RobotKeyword
 	public void connectToDatabase(String dbName, String driverClass, String dbConnection, String dbUser,
 			String dbPassword) throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
 		Class.forName(driverClass).newInstance();
-		this.setConnectionConfig(driverClass, dbConnection, dbUser, dbPassword);
-		this.setConnection(dbName, DriverManager.getConnection(dbConnection, dbUser, dbPassword));
+		robotDatabaseLibraryUtils.setConnectionConfig(driverClass, dbConnection, dbUser, dbPassword);
+		robotDatabaseLibraryUtils.setConnection(dbName, DriverManager.getConnection(dbConnection, dbUser, dbPassword));
 		LoggerUtils.info(LOGGER, "Connected to database : " + dbName);
 	}
 
 	@RobotKeyword
 	public void disconnectFromDatabases() throws SQLException {
-		for (Map.Entry<String, Connection> entry : connections.entrySet()) {
+		for (Map.Entry<String, Connection> entry : robotDatabaseLibraryUtils.connections.entrySet()) {
 			LoggerUtils.info(LOGGER, "Disconnecting Database : " + entry.getKey());
 			LoggerUtils.info(LOGGER, "SQL Warning on this connection : " + entry.getValue().getWarnings());
 			entry.getValue().close();
@@ -93,7 +92,7 @@ public class RobotDatabaseLibrary extends CompareDBObject {
 	@RobotKeyword
 	public void disconnectFromDatabase(String dbName) throws SQLException {
 		RobotRestLibrary.tableMap.clear();
-		Connection conn = connections.get(dbName);
+		Connection conn = robotDatabaseLibraryUtils.connections.get(dbName);
 		if (conn != null) {
 			LoggerUtils.info(LOGGER, "Disconnectiong Database : " + dbName);
 			LoggerUtils.info(LOGGER, "SQL Warning on this connection : " + conn.getWarnings());
@@ -105,7 +104,7 @@ public class RobotDatabaseLibrary extends CompareDBObject {
 
 	@RobotKeyword
 	public Object getDBValue(String queryAlias) throws SQLException {
-		Map<String, String> queryAttributesMap = validationUtils.getValidationAttributes(sqlResource, sqlQueries,
+		Map<String, String> queryAttributesMap = validationUtils.getValidationAttributes(robotDatabaseLibraryUtils.sqlResource, robotDatabaseLibraryUtils.sqlQueries,
 				queryAlias);
 		LOGGER.info("Query attributes : " + queryAttributesMap);
 		List<Map<String, String>> dbResults = executeSql(queryAttributesMap.get(ValidationUtils.KEY_DBNAME),
@@ -131,7 +130,7 @@ public class RobotDatabaseLibrary extends CompareDBObject {
 	@RobotKeyword
 	public List<Map<String, String>> getDBValues(String queryAlias) throws SQLException {
 		System.out.println("enter getDBValues function.");
-		Map<String, String> queryAttributesMap = validationUtils.getValidationAttributes(sqlResource, sqlQueries, queryAlias);
+		Map<String, String> queryAttributesMap = validationUtils.getValidationAttributes(robotDatabaseLibraryUtils.sqlResource, robotDatabaseLibraryUtils.sqlQueries, queryAlias);
 		LoggerUtils.info(LOGGER, "Query Attributes : " + queryAttributesMap);
 		List<Map<String, String>> dbResults = executeSql(queryAttributesMap.get(ValidationUtils.KEY_DBNAME), queryAttributesMap.get(ValidationUtils.KEY_QUERY));
 		return dbResults;
@@ -139,7 +138,7 @@ public class RobotDatabaseLibrary extends CompareDBObject {
 	
 	@RobotKeyword
 	public List<Map<String, String>> executeSql(String dbName, String sqlQuery) throws SQLException {
-		return executeSqlQuery(dbName, sqlQuery);
+		return robotDatabaseLibraryUtils.executeSqlQuery(dbName, sqlQuery);
 	}
 
 }
